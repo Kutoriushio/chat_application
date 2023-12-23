@@ -20,7 +20,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const session = useSession();
 
   const handleClick = useCallback(() => {
-    router.push(`/conversation/${conversation.id}`);
+    router.push(`/conversations/${conversation.id}`);
   }, [router, conversation]);
 
   const lastMessage = useMemo(() => {

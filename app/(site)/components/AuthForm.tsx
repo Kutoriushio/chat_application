@@ -2,27 +2,26 @@
 
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
 type Variant = "LOGIN" | "REGISTER";
 const AuthForm = () => {
-  const session = useSession();
-  const router = useRouter();
+  // const session = useSession();
+  // const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (session?.status === "authenticated") {
-      router.push("/users");
-    }
-  }, [session?.status, router]);
+  // useEffect(() => {
+  //   if (session?.status === "authenticated") {
+  //     router.push("/users");
+  //   }
+  // }, [session?.status, router]);
 
   const toggleVariant = () => {
     if (variant === "LOGIN") {
@@ -53,7 +52,7 @@ const AuthForm = () => {
         .then(() =>
           signIn("credentials", {
             ...data,
-            redirect: false,
+            callbackUrl: "/users",
           })
         )
         .catch(() => toast.error("Something went wrong!"))
@@ -63,7 +62,7 @@ const AuthForm = () => {
     if (variant === "LOGIN") {
       signIn("credentials", {
         ...data,
-        redirect: false,
+        callbackUrl: "/users",
       })
         .then((callback) => {
           if (callback?.error) {
@@ -81,7 +80,7 @@ const AuthForm = () => {
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    signIn(action, { redirect: false })
+    signIn(action, { callbackUrl: "/users" })
       .then((callback) => {
         if (callback?.error) {
           toast.error("Something went wrong!");

@@ -9,7 +9,7 @@ async function Sidebar({ children }: { children: React.ReactNode }) {
     <div className="h-full">
       <MobileFooter />
       <DesktopSidebar currentUser={currentUser!} />
-      <main className="h-full pl-20">{children}</main>
+      <main className="h-full lg:pl-20">{children}</main>
     </div>
   );
 }
