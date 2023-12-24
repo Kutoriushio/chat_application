@@ -1,36 +1,59 @@
 "use client";
 import useConversation from "@/app/hooks/useConverstaion";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import MessageInput from "./MessageInput";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import clsx from "clsx";
+import { CldUploadButton } from "next-cloudinary";
 
 const Form = () => {
   const { conversationId } = useConversation();
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FieldValues>({
     defaultValues: {
       message: "",
     },
   });
-  console.log(errors.message);
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setValue("message", "");
-    axios.post("/api/message", {
+    axios.post("/api/messages", {
       ...data,
       conversationId: conversationId,
     });
   };
+
+  const handleUpload = (data: any) => {
+    axios.post("/api/messages", {
+      image: data.info.secure_url,
+      conversationId: conversationId,
+    });
+  };
+
   return (
     <div className="p-4 bg-white border-t flex items-center gap-2 lg:gap-4 w-full">
-      <MdOutlineAddPhotoAlternate size={30} className="mb-0.5" />
+      <CldUploadButton
+        options={{ maxFiles: 1 }}
+        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_PRESET}
+        onUpload={handleUpload}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+        className={`${open ? "text-sky-600" : ""}`}
+      >
+        <MdOutlineAddPhotoAlternate
+          size={30}
+          className="mb-0.5 hover:text-sky-600"
+        />
+      </CldUploadButton>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex w-full items-center gap-2 lg:gap-4"
@@ -46,9 +69,9 @@ const Form = () => {
           type="submit"
           className={clsx(
             "hover:text-sky-600 p-2 rounded-full transition",
-            errors.message && "opacity-20 hover:text-black"
+            (errors.message || !isDirty) && "hover:!text-black opacity-20 "
           )}
-          disabled={!!errors.message}
+          disabled={!isDirty || !!errors.message}
         >
           <HiOutlinePaperAirplane size={24} />
         </button>

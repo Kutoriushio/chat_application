@@ -43,7 +43,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     if (!userEmail) {
       return true;
     }
-
+    console.log(lastMessage);
     return seenArray.filter((user) => user.email === userEmail).length !== 0;
   }, [lastMessage, userEmail]);
 
@@ -73,9 +73,9 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
           <p className="text-sm font-medium text-gray-900">
             {conversation.name || otherUser.name}
           </p>
-          {true && (
+          {lastMessage && (
             <p className="text-xs text-gray-400 font-light">
-              {format(new Date(), "HH:mm")}
+              {format(lastMessage.createdAt, "HH:mm")}
             </p>
           )}
         </div>
