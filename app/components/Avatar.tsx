@@ -13,6 +13,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
           fill
           src={user?.image || "/images/placeholder.jpg"}
           alt="avatar"
+          className="object-cover object-top"
         />
       </div>
       <span className="absolute ring-2 ring-white top-0 right-0 h-2 w-2 block bg-green-500 rounded-full md:h-3 md:w-3" />
