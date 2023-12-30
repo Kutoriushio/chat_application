@@ -7,6 +7,7 @@ import { useMemo, useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
 import { RxHamburgerMenu } from "react-icons/rx";
 import ProfileDrawer from "./ProfileDrawer";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -42,10 +43,14 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             <HiChevronLeft size={32} />
           </Link>
           <div className="mt-1.5">
-            <Avatar user={otherUser} />
+            {conversation.isGroup ? (
+              <AvatarGroup users={conversation.users} />
+            ) : (
+              <Avatar user={otherUser} />
+            )}
           </div>
 
-          <div className="flex flex-col gap-0.5">
+          <div className="flex flex-col">
             <p className="text-sm font-medium text-gray-900">
               {conversation.name || otherUser.name}
             </p>

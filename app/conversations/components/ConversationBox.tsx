@@ -1,4 +1,5 @@
 import Avatar from "@/app/components/Avatar";
+import AvatarGroup from "@/app/components/AvatarGroup";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import { FullConversationType } from "@/app/types";
 import clsx from "clsx";
@@ -43,7 +44,6 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     if (!userEmail) {
       return true;
     }
-    console.log(lastMessage);
     return seenArray.filter((user) => user.email === userEmail).length !== 0;
   }, [lastMessage, userEmail]);
 
@@ -67,7 +67,12 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         selected ? "bg-sky-200" : "bg-white"
       )}
     >
-      <Avatar user={otherUser} />
+      {conversation.isGroup ? (
+        <AvatarGroup users={conversation.users} />
+      ) : (
+        <Avatar user={otherUser} />
+      )}
+
       <div className="min-w-0 flex-1 mb-1 flex flex-col gap-1">
         <div className="flex justify-between items-center">
           <p className="text-sm font-medium text-gray-900">

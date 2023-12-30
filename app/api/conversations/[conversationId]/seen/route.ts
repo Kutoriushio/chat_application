@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
+import { pusherServer } from "@/app/libs/pusher";
 
 interface IParams {
   conversationId: string;
@@ -56,7 +57,13 @@ export async function POST(
                 seen: true
             }
         })
+        // Returns the index of the first occurrence of a value in an array, or -1 if it is not present.
+        if (lastMessage.seenIds.indexOf(currentUser.id) !== -1) {
+            return NextResponse.json(conversation)
+        }
 
+        pusherServer.trigger(conversationId, "update-message", updatedLastMessage)
+        
         return NextResponse.json(updatedLastMessage)
     } catch (error) {
         return new NextResponse("Internal Error", {status: 500})

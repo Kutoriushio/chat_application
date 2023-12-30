@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
+
 interface ConfirmModalProps {
   isOpen?: boolean;
   onClose: () => void;

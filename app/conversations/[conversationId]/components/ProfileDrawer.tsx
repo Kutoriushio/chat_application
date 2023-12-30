@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import React, { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
 import ConfirmModal from "./ConfirmModal";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 interface ProfileDrawerProps {
   data: Conversation & {
@@ -76,7 +77,12 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                   </div>
 
                   <div className="flex flex-col items-center px-4 sm:px-6">
-                    <Avatar user={otherUser} />
+                    {data.isGroup ? (
+                      <AvatarGroup users={data.users} />
+                    ) : (
+                      <Avatar user={otherUser} />
+                    )}
+
                     <div className="mt-2">{title}</div>
                     <div className="text-sm text-neutral-800">{statusText}</div>
                     <div
@@ -98,8 +104,16 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                             <dt className="text-sm font-medium text-gray-500 sm:w-40">
                               Emails
                             </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2">
-                              {data.users.map((user) => user.email).join(",")}
+                            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 flex flex-col gap-2">
+                              {data.users.map((user) => (
+                                <div
+                                  key={user.id}
+                                  className="flex justify-between items-center"
+                                >
+                                  <span>{user.name}</span>
+                                  <div>{user.email}</div>
+                                </div>
+                              ))}
                             </dd>
                           </div>
                         )}

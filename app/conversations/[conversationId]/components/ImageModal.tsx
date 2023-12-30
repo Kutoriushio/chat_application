@@ -1,17 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
+import Image from "next/image";
 import React, { Fragment } from "react";
 import { IoClose } from "react-icons/io5";
 
-interface ModalProps {
+interface ImageModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  children: React.ReactNode;
+  src?: string | null;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const ImageModal: React.FC<ImageModalProps> = ({ isOpen, onClose, src }) => {
+  if (!src) {
+    return null;
+  }
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" onClose={() => null} className="relative z-50">
+      <Dialog as="div" onClose={onClose} className="relative z-50">
         <Transition.Child
           enter="ease-out durantion-300"
           enterFrom="opacity-0"
@@ -33,18 +37,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="bg-white w-full rounded-lg shadow-xl sm:max-w-lg relative transform overflow-hidden p-4 sm:p-6">
-                <div className="absolute right-0 top-0 hidden sm:block z-10 pr-4 pt-5">
-                  <button
-                    type="button"
-                    className="text-gray-400 hover:text-gray-500"
+              <Dialog.Panel className="w-full h-[672px] rounded-lg sm:max-w-2xl overflow-hidden relative flex justify-center items-center">
+                <div>
+                  <Image
+                    src={src}
+                    fill
+                    alt="image"
+                    className="object-contain w-full h-full"
                     onClick={onClose}
-                  >
-                    <span className="sr-only">Close Panel</span>
-                    <IoClose size={24} />
-                  </button>
+                  />
                 </div>
-                {children}
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -54,4 +56,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   );
 };
 
-export default Modal;
+export default ImageModal;

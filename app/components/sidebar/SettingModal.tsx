@@ -39,6 +39,7 @@ const SettingModal: React.FC<SettingModalProps> = ({
   const image = watch("image");
 
   const handleUpload = (data: any) => {
+    console.log(data);
     setValue("image", data.info.secure_url, {
       shouldValidate: true,
     });
@@ -78,7 +79,7 @@ const SettingModal: React.FC<SettingModalProps> = ({
             </label>
             <div className="mt-2">
               <CldUploadButton
-                options={{ maxFiles: 1 }}
+                options={{ maxFiles: 1, cropping: true }}
                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_PRESET}
                 onUpload={handleUpload}
                 className="relative"
@@ -102,7 +103,12 @@ const SettingModal: React.FC<SettingModalProps> = ({
           <Input label="Name" id="name" register={register} errors={errors} />
           <hr className="mt-5" />
           <div className="flex mt-6 justify-end items-center gap-6">
-            <Button secondary onClick={onClose} disabled={isLoading}>
+            <Button
+              secondary
+              onClick={onClose}
+              disabled={isLoading}
+              type="button"
+            >
               Cancel
             </Button>
             <Button disabled={isLoading} type="submit">

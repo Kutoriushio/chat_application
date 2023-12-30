@@ -8,10 +8,40 @@ export async function POST(
     try {
         const currentUser = await getCurrentUser();
         const body = await request.json();
-        const { userId } = body;
+        const { userId, members, isGroup, name } = body;
 
         if (!currentUser?.email && !currentUser?.id) {
             return new NextResponse("Unauthorized", {status: 401})
+        }
+
+        // Group chat
+
+        if (isGroup && (!members || members.length < 2 || !name)) {
+            return new NextResponse('Invalid data', { status: 400 });
+        }
+
+        if (isGroup) {
+            const newConversation = await prisma.conversation.create({
+                data: {
+                    name: name,
+                    isGroup,
+                    users: {
+                        connect: [
+                            ...members.map((member: {value: string}) => ({
+                                id: member.value
+                            })),
+                            {
+                                id:currentUser.id
+                            }
+                        ]
+                    }
+                },
+                include: {
+                    users: true
+                }
+            })
+
+            return NextResponse.json(newConversation)
         }
 
         // for one-to-one conversation, users can only create one with the same user

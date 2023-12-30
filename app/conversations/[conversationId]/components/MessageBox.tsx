@@ -4,7 +4,8 @@ import clsx from "clsx";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import ImageModal from "./ImageModal";
 
 interface MessageBoxProps {
   data: FullMessageType;
@@ -12,7 +13,7 @@ interface MessageBoxProps {
 }
 const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   const session = useSession();
-
+  const [imageModalOpen, setImageModalOpen] = useState(false);
   const isOwn = data.sender.email === session.data?.user?.email;
 
   const seenList = (data.seen || [])
@@ -23,10 +24,11 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   const avatar = clsx(isOwn && "order-2");
   const body = clsx("flex flex-col gap-2", isOwn && "items-end");
   const message = clsx(
-    "text-sm w-fit overflow-hidden",
+    "text-sm w-fit max-w-[144px] lg:max-w-[288px] overflow-hidden break-words",
     isOwn ? "bg-sky-500 text-white" : "bg-gray-100",
     data.image ? "rounded-md p-0" : "rounded-lg py-2 px-3"
   );
+  console.log(data.seen);
   return (
     <div className={container}>
       <div className={avatar}>
@@ -40,18 +42,27 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
           </div>
         </div>
         <div className={message}>
+          <ImageModal
+            isOpen={imageModalOpen}
+            onClose={() => setImageModalOpen(false)}
+            src={data?.image}
+          />
           {data.image ? (
             <Image
-              width="288"
+              width="144"
               height="288"
               alt="image"
               src={data.image}
-              className="cursor-pointer object-cover hover:scale-110 transition"
+              className="cursor-pointer w-[144px] lg:w-[288px]"
+              onClick={() => setImageModalOpen(true)}
             />
           ) : (
             <div>{data.body}</div>
           )}
         </div>
+        {isLast && isOwn && seenList.length > 0 && (
+          <div className="text-xs font-light text-gray-500">{`Seen by ${seenList}`}</div>
+        )}
       </div>
     </div>
   );
