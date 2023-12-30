@@ -1,13 +1,17 @@
 "use client";
 
-import { FullConversationType } from "@/app/types";
+import { FullConversationType, FullMessageType } from "@/app/types";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
 import useConversation from "@/app/hooks/useConverstaion";
 import { User } from "@prisma/client";
 import GroupChatModal from "./GroupChatModal";
+import { useSession } from "next-auth/react";
+import { pusherClient } from "@/app/libs/pusher";
+import { find } from "lodash";
+import { useRouter } from "next/navigation";
 
 interface ConversationListProps {
   initialConversations: FullConversationType[];
@@ -18,9 +22,71 @@ const ConversationList: React.FC<ConversationListProps> = ({
   initialConversations,
   users,
 }) => {
-  const [conversations, setconversations] = useState(initialConversations);
+  const session = useSession();
+  const [conversations, setConversations] = useState(initialConversations);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { conversationId, isOpen } = useConversation();
+  const router = useRouter();
+
+  const pusherChannel = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherChannel) {
+      return;
+    }
+    pusherClient.subscribe(pusherChannel);
+
+    const newConversationHandler = (conversation: FullConversationType) => {
+      setConversations((current) => {
+        if (find(current, { id: conversation.id })) {
+          return current;
+        }
+        return [conversation, ...current];
+      });
+    };
+
+    const updateConversationHandler = (data: {
+      id: string;
+      messages: FullMessageType[];
+    }) => {
+      setConversations((current) =>
+        current.map((currentConversation) => {
+          if (currentConversation.id === data.id) {
+            return {
+              ...currentConversation,
+              messages: data.messages,
+            };
+          }
+          return currentConversation;
+        })
+      );
+    };
+
+    const removeConversationHandler = (conversation: FullConversationType) => {
+      setConversations((current) => {
+        return [
+          ...current.filter(
+            (currentConversation) => currentConversation.id !== conversation.id
+          ),
+        ];
+      });
+      router.push("/conversations");
+    };
+
+    pusherClient.bind("new-conversation", newConversationHandler);
+    pusherClient.bind("update-conversation", updateConversationHandler);
+    pusherClient.bind("remove-conversation", removeConversationHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherChannel);
+      pusherClient.unbind("new-conversation", newConversationHandler);
+      pusherClient.unbind("update-conversation", updateConversationHandler);
+      pusherClient.unbind("remove-conversation", removeConversationHandler);
+    };
+  }, [pusherChannel, router]);
+
   return (
     <>
       <GroupChatModal

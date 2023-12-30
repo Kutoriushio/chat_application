@@ -57,12 +57,17 @@ export async function POST(
                 seen: true
             }
         })
+
+        await pusherServer.trigger(currentUser.email!, "update-conversation", {
+            id: conversationId,
+            messages: [updatedLastMessage]
+        })
         // Returns the index of the first occurrence of a value in an array, or -1 if it is not present.
         if (lastMessage.seenIds.indexOf(currentUser.id) !== -1) {
             return NextResponse.json(conversation)
         }
 
-        pusherServer.trigger(conversationId, "update-message", updatedLastMessage)
+        await pusherServer.trigger(conversationId, "update-message", updatedLastMessage)
         
         return NextResponse.json(updatedLastMessage)
     } catch (error) {

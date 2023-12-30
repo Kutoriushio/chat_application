@@ -44,6 +44,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     if (!userEmail) {
       return true;
     }
+
     return seenArray.filter((user) => user.email === userEmail).length !== 0;
   }, [lastMessage, userEmail]);
 

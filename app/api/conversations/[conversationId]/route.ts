@@ -1,5 +1,6 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
+import { pusherServer } from "@/app/libs/pusher";
 import { NextRequest, NextResponse } from "next/server";
 
 interface IParams {
@@ -40,6 +41,11 @@ export async function POST(
 
         })
 
+        existingConversation.users.map((user) => {
+            if(user.email) {
+                pusherServer.trigger(user.email, "remove-conversation", existingConversation)
+            }
+        })
         return NextResponse.json(deletedConversation)
     } catch (error) {
         return new NextResponse("Internal Error", {status: 500})
