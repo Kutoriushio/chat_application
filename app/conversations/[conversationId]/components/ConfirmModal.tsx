@@ -24,9 +24,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
     axios
       .post(`/api/conversations/${conversationId}`)
       .then(() => {
-        onClose;
+        onClose();
         router.push("/conversations");
-        router.refresh();
+        // router.refresh();
       })
       .catch(() => {
         toast.error("Something went wrong.");

@@ -73,6 +73,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         ];
       });
       router.push("/conversations");
+      router.refresh();
     };
 
     pusherClient.bind("new-conversation", newConversationHandler);
