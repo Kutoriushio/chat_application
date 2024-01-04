@@ -40,9 +40,9 @@ export async function POST(
       },
     });
 
-    existingConversation.users.map((user) => {
+    existingConversation.users.map(async (user) => {
       if (user.email) {
-        pusherServer.trigger(
+        await pusherServer.trigger(
           user.email,
           "remove-conversation",
           existingConversation

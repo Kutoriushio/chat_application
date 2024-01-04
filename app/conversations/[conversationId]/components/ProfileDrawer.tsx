@@ -1,3 +1,5 @@
+"use client";
+
 import Avatar from "@/app/components/Avatar";
 import useOtherUser from "@/app/hooks/useOtherUser";
 import { Dialog, Transition } from "@headlessui/react";

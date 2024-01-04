@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, Transition } from "@headlessui/react";
 import Image from "next/image";
 import React, { Fragment } from "react";

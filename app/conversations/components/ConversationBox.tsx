@@ -1,3 +1,4 @@
+"use client";
 import Avatar from "@/app/components/Avatar";
 import AvatarGroup from "@/app/components/AvatarGroup";
 import useOtherUser from "@/app/hooks/useOtherUser";

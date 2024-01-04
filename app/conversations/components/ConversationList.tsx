@@ -26,7 +26,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [conversations, setConversations] = useState(initialConversations);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { conversationId, isOpen } = useConversation();
-  const router = useRouter();
+  // const router = useRouter();
 
   const pusherChannel = useMemo(() => {
     return session.data?.user?.email;
@@ -72,8 +72,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
           ),
         ];
       });
-      router.push("/conversations");
-      router.refresh();
+      // router.push("/conversations");
+      // router.refresh();
     };
 
     pusherClient.bind("new-conversation", newConversationHandler);
@@ -86,7 +86,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind("update-conversation", updateConversationHandler);
       pusherClient.unbind("remove-conversation", removeConversationHandler);
     };
-  }, [pusherChannel, router]);
+  }, [pusherChannel]);
 
   return (
     <>
