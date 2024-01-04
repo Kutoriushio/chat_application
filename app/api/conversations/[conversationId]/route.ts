@@ -24,12 +24,34 @@ export async function POST(
       },
       include: {
         users: true,
+        messages: true,
       },
     });
 
     if (!existingConversation) {
       return new NextResponse("Invalid ID", { status: 400 });
     }
+
+    await Promise.all(
+      existingConversation.users.map(async (user) => {
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            conversationIds: user.conversationIds.filter(
+              (id) => id !== conversationId
+            ),
+            seenMessageIds: user.seenMessageIds.filter(
+              (id) =>
+                !existingConversation.messages.some(
+                  (message) => message.id === id
+                )
+            ),
+          },
+        });
+      })
+    );
 
     const deletedConversation = await prisma.conversation.deleteMany({
       where: {
