@@ -40,15 +40,17 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      newConversation.users.map(async (user) => {
-        if (user.email) {
-          await pusherServer.trigger(
-            user.email,
-            "new-conversation",
-            newConversation
-          );
-        }
-      });
+      await Promise.all(
+        newConversation.users.map(async (user) => {
+          if (user.email) {
+            await pusherServer.trigger(
+              user.email,
+              "new-conversation",
+              newConversation
+            );
+          }
+        })
+      );
 
       return NextResponse.json(newConversation);
     }
@@ -95,15 +97,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    newConversation.users.map(async (user) => {
-      if (user.email) {
-        await pusherServer.trigger(
-          user.email,
-          "new-conversation",
-          newConversation
-        );
-      }
-    });
+    // when deploy on vercel, need to use await for each pusher trigger event
+    await Promise.all(
+      newConversation.users.map(async (user) => {
+        if (user.email) {
+          await pusherServer.trigger(
+            user.email,
+            "new-conversation",
+            newConversation
+          );
+        }
+      })
+    );
     return NextResponse.json(newConversation);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });

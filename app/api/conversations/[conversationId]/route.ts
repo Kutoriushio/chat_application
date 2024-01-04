@@ -40,15 +40,17 @@ export async function POST(
       },
     });
 
-    existingConversation.users.map(async (user) => {
-      if (user.email) {
-        await pusherServer.trigger(
-          user.email,
-          "remove-conversation",
-          existingConversation
-        );
-      }
-    });
+    await Promise.all(
+      existingConversation.users.map(async (user) => {
+        if (user.email) {
+          await pusherServer.trigger(
+            user.email,
+            "remove-conversation",
+            existingConversation
+          );
+        }
+      })
+    );
     return NextResponse.json(deletedConversation);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
