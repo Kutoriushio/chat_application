@@ -28,6 +28,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -49,11 +50,24 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
         // router.refresh();
         onClose();
       })
-      .catch(() => toast.error("Something went wrong!"))
+      .catch((error) => {
+        if (error.response.status === 400) {
+          toast.error("Please add more than 2 people.");
+        }
+        if (error.response.status === 402) {
+          toast.error("Please give a chat name.");
+        }
+      })
       .finally(() => setIsLoading(false));
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        reset();
+      }}
+    >
       <div className="text-left">
         <div className="text-base font-semibold leading-7 text-gray-900">
           Create a group chat
@@ -66,13 +80,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           className="mt-5 flex flex-col gap-5"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
-            label="Name"
-            id="name"
-            register={register}
-            errors={errors}
-            required
-          />
+          <Input label="Name" id="name" register={register} errors={errors} />
           <Select
             disabled={isLoading}
             label="Members"
@@ -92,7 +100,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
           <div className="flex mt-6 justify-end items-center gap-6">
             <Button
               secondary
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                reset();
+              }}
               disabled={isLoading}
               type="button"
             >

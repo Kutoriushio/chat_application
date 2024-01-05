@@ -9,6 +9,8 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 type Variant = "LOGIN" | "REGISTER";
 const AuthForm = () => {
@@ -16,7 +18,16 @@ const AuthForm = () => {
   // const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
-
+  const schema = yup.object({
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters"),
+  });
   // useEffect(() => {
   //   if (session?.status === "authenticated") {
   //     router.push("/users");
@@ -36,13 +47,14 @@ const AuthForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>({
+    resolver: yupResolver<FieldValues>(schema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
+    mode: "onChange",
   });
-
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
@@ -107,7 +119,7 @@ const AuthForm = () => {
             {variant === "REGISTER" && (
               <Input
                 id="name"
-                label="name"
+                label="Name"
                 register={register}
                 disabled={isLoading}
                 errors={errors}
@@ -119,7 +131,6 @@ const AuthForm = () => {
               register={register}
               disabled={isLoading}
               errors={errors}
-              type="email"
             />
             <Input
               id="password"

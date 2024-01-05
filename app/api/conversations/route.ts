@@ -14,8 +14,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Group chat
+    if (isGroup && !name) {
+      return new NextResponse("Invalid data", { status: 402 });
+    }
 
-    if (isGroup && (!members || members.length < 2 || !name)) {
+    if (isGroup && (!members || members.length < 2)) {
       return new NextResponse("Invalid data", { status: 400 });
     }
 

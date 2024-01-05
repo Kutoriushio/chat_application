@@ -28,6 +28,7 @@ const SettingModal: React.FC<SettingModalProps> = ({
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -60,7 +61,13 @@ const SettingModal: React.FC<SettingModalProps> = ({
       .finally(() => setIsLoading(false));
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        reset();
+      }}
+    >
       <div className="text-left">
         <div className="text-base font-semibold leading-7 text-gray-900">
           Profile
@@ -105,7 +112,10 @@ const SettingModal: React.FC<SettingModalProps> = ({
           <div className="flex mt-6 justify-end items-center gap-6">
             <Button
               secondary
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                reset();
+              }}
               disabled={isLoading}
               type="button"
             >
