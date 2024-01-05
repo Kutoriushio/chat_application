@@ -3,6 +3,7 @@ import getUsers from "../actions/getUsers";
 import Sidebar from "../components/sidebar/Sidebar";
 import ConversationList from "./components/ConversationList";
 
+export const dynamic = "force-dynamic";
 export default async function ConversationsLayout({
   children,
 }: {

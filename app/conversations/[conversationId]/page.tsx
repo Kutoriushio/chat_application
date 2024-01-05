@@ -8,6 +8,7 @@ import Form from "./components/Form";
 interface IParams {
   conversationId: string;
 }
+export const dynamic = "force-dynamic";
 
 const ConversationId = async ({ params }: { params: IParams }) => {
   const conversation = await getConversationById(params.conversationId);

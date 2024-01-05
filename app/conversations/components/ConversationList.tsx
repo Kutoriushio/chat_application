@@ -23,16 +23,17 @@ const ConversationList: React.FC<ConversationListProps> = ({
   users,
 }) => {
   const session = useSession();
-  const [conversations, setConversations] = useState(initialConversations);
+  const [conversations, setConversations] =
+    useState<FullConversationType[]>(initialConversations);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { conversationId, isOpen } = useConversation();
-  // const router = useRouter();
-
+  const router = useRouter();
   const pusherChannel = useMemo(() => {
     return session.data?.user?.email;
   }, [session.data?.user?.email]);
-
+  console.log(conversations);
   useEffect(() => {
+    router.refresh();
     if (!pusherChannel) {
       return;
     }
@@ -87,7 +88,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind("remove-conversation", removeConversationHandler);
     };
   }, [pusherChannel]);
-
   return (
     <>
       <GroupChatModal
