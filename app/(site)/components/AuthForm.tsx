@@ -11,12 +11,10 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRouter } from "next/navigation";
 
 type Variant = "LOGIN" | "REGISTER";
 const AuthForm = () => {
   const session = useSession();
-  const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
   const schema = yup.object({
@@ -31,9 +29,9 @@ const AuthForm = () => {
   });
   useEffect(() => {
     if (session?.status === "authenticated") {
-      router.push("/users");
+      window.location.href = "/users";
     }
-  }, [session?.status, router]);
+  }, [session?.status]);
 
   const toggleVariant = () => {
     if (variant === "LOGIN") {

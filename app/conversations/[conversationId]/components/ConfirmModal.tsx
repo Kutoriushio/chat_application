@@ -28,7 +28,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
       .then(() => {
         onClose();
         router.push("/conversations");
-        // router.refresh();
+        router.refresh();
       })
       .catch(() => {
         toast.error("Something went wrong.");

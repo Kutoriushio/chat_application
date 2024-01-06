@@ -11,7 +11,7 @@ export default async function handler(
   const session = await getServerSession(request, response, authOptions);
 
   if (!session?.user?.email) {
-    return response.status(401);
+    return response.status(401).send("Unauthorized");
   }
 
   const socketId = request.body.socket_id;

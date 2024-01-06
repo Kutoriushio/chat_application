@@ -29,7 +29,6 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
   // && => axios.post(`/api/conversations/${conversationId}/seen`) => trigger "update-message" event
   // => update message's last seen list
   useEffect(() => {
-    router.refresh();
     pusherClient.subscribe(conversationId);
     bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
 

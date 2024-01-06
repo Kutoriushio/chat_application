@@ -8,10 +8,12 @@ import MessageInput from "./MessageInput";
 import { HiOutlinePaperAirplane } from "react-icons/hi2";
 import clsx from "clsx";
 import { CldUploadButton } from "next-cloudinary";
+import { useRouter } from "next/navigation";
 
 const Form = () => {
   const { conversationId } = useConversation();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -25,10 +27,14 @@ const Form = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setValue("message", "");
-    axios.post("/api/messages", {
-      ...data,
-      conversationId: conversationId,
-    });
+    axios
+      .post("/api/messages", {
+        ...data,
+        conversationId: conversationId,
+      })
+      .then(() => {
+        router.refresh();
+      });
   };
 
   const handleUpload = (data: any) => {
