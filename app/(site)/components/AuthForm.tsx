@@ -2,7 +2,7 @@
 
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -11,11 +11,12 @@ import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
 
 type Variant = "LOGIN" | "REGISTER";
 const AuthForm = () => {
-  // const session = useSession();
-  // const router = useRouter();
+  const session = useSession();
+  const router = useRouter();
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setIsLoading] = useState(false);
   const schema = yup.object({
@@ -28,11 +29,11 @@ const AuthForm = () => {
       .required("Password is required")
       .min(8, "Password must be at least 8 characters"),
   });
-  // useEffect(() => {
-  //   if (session?.status === "authenticated") {
-  //     router.push("/users");
-  //   }
-  // }, [session?.status, router]);
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      router.push("/users");
+    }
+  }, [session?.status, router]);
 
   const toggleVariant = () => {
     if (variant === "LOGIN") {
@@ -64,21 +65,22 @@ const AuthForm = () => {
         .then(() =>
           signIn("credentials", {
             ...data,
-            callbackUrl: "/users",
           })
         )
-        .catch(() => toast.error("Something went wrong!"))
+        .catch(() => toast.error("This email address is already exist!"))
         .finally(() => setIsLoading(false));
     }
 
     if (variant === "LOGIN") {
       signIn("credentials", {
         ...data,
-        callbackUrl: "/users",
+        redirect: false,
       })
         .then((callback) => {
-          if (callback?.error) {
-            toast.error("Something went wrong!");
+          if (callback?.error === "Invalid email address") {
+            toast.error("This email address does not exist!");
+          } else if (callback?.error === "Invalid password") {
+            toast.error("The password is not correct!");
           }
 
           if (!callback?.error && callback?.ok) {
