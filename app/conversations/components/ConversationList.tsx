@@ -85,7 +85,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       pusherClient.unbind("update-conversation", updateConversationHandler);
       pusherClient.unbind("remove-conversation", removeConversationHandler);
     };
-  }, [pusherChannel]);
+  }, [pusherChannel, router]);
   return (
     <>
       <GroupChatModal

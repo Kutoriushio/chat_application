@@ -27,7 +27,7 @@ const MobileItem: React.FC<MobileItemProps> = ({
       )}
     >
       <Icon className="h-6 w-6" />
-      <span className="font-semibold text-sm">{label}</span>
+      <span className="font-semibold text-xs">{label}</span>
     </Link>
   );
 };
