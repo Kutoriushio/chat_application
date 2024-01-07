@@ -33,6 +33,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   }, [session.data?.user?.email]);
 
   useEffect(() => {
+    router.refresh();
     if (!pusherChannel) {
       return;
     }
