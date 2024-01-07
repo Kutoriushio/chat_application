@@ -23,6 +23,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   users,
 }) => {
   const session = useSession();
+  const router = useRouter();
   const [conversations, setConversations] =
     useState<FullConversationType[]>(initialConversations);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +33,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   }, [session.data?.user?.email]);
 
   useEffect(() => {
+    router.refresh();
     if (!pusherChannel) {
       return;
     }

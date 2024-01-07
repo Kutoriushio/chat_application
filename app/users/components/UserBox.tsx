@@ -9,17 +9,11 @@ interface UserBoxProps {
 }
 const UserBox: React.FC<UserBoxProps> = ({ user }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const handleClick = useCallback(() => {
-    setIsLoading(true);
-
-    axios
-      .post("/api/conversations", { userId: user.id })
-      .then((data) => {
-        router.push(`/conversations/${data.data.id}`);
-        router.refresh();
-      })
-      .finally(() => setIsLoading(false));
+    axios.post("/api/conversations", { userId: user.id }).then((data) => {
+      router.push(`/conversations/${data.data.id}`);
+      router.refresh();
+    });
   }, [user, router]);
 
   return (

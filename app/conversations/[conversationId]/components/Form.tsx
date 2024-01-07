@@ -27,14 +27,10 @@ const Form = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setValue("message", "");
-    axios
-      .post("/api/messages", {
-        ...data,
-        conversationId: conversationId,
-      })
-      .then(() => {
-        router.refresh();
-      });
+    axios.post("/api/messages", {
+      ...data,
+      conversationId: conversationId,
+    });
   };
 
   const handleUpload = (data: any) => {

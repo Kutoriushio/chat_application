@@ -7,7 +7,6 @@ import axios from "axios";
 import useConversation from "@/app/hooks/useConverstaion";
 import { pusherClient } from "@/app/libs/pusher";
 import { find } from "lodash";
-import { useRouter } from "next/navigation";
 
 interface BodyProps {
   initialMessages: FullMessageType[];
@@ -17,7 +16,6 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { conversationId } = useConversation();
-  const router = useRouter();
   // First useEffect: Send a POST request to mark the conversation as seen when conversationId changes.
   useEffect(() => {
     axios.post(`/api/conversations/${conversationId}/seen`);
