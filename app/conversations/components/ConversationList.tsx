@@ -33,7 +33,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
   }, [session.data?.user?.email]);
 
   useEffect(() => {
-    router.refresh();
     if (!pusherChannel) {
       return;
     }
@@ -46,6 +45,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         }
         return [conversation, ...current];
       });
+      router.refresh();
     };
 
     const updateConversationHandler = (data: {
@@ -73,6 +73,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           ),
         ];
       });
+      router.refresh();
     };
 
     pusherClient.bind("new-conversation", newConversationHandler);
