@@ -1,65 +1,94 @@
+"use client";
+import getUsers from "@/app/actions/getUsers";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
 import Select from "@/app/components/inputs/Select";
 import Modal from "@/app/components/modals/Modal";
-import { User } from "@prisma/client";
+import useConversation from "@/app/hooks/useConverstaion";
+import { Conversation, User } from "@prisma/client";
 import axios from "axios";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import { CldUploadButton } from "next-cloudinary";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { VscEdit } from "react-icons/vsc";
 
-interface GroupChatModalProps {
-  isOpen?: boolean;
+interface GroupSettingModalProps {
   onClose: () => void;
+  isOpen?: boolean;
+  currentConversation: Conversation & {
+    users: User[];
+  };
   users: User[];
 }
 
-const GroupChatModal: React.FC<GroupChatModalProps> = ({
-  isOpen,
+const GroupSettungModal: React.FC<GroupSettingModalProps> = ({
   onClose,
+  isOpen,
+  currentConversation,
   users,
 }) => {
   const router = useRouter();
+  const session = useSession();
+  const { conversationId } = useConversation();
   const [isLoading, setIsLoading] = useState(false);
-
+  const currentMembers = currentConversation.users.map((user) => ({
+    value: user.id,
+    label: user.name,
+    email: user.email,
+  }));
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      members: "",
-      image: "",
+      name: currentConversation.name,
+      image: currentConversation.image,
+      members: currentMembers,
     },
   });
 
-  const members = watch("members");
   const image = watch("image");
+  const members = watch("members");
+  const styles = {
+    multiValue: (base: any, state: { data: any }) => {
+      return state.data.email === session.data?.user?.email
+        ? { ...base, backgroundColor: "gray" }
+        : base;
+    },
+    multiValueRemove: (base: any, state: { data: any }) => {
+      return state.data.email === session.data?.user?.email
+        ? { ...base, display: "none" }
+        : base;
+    },
+    multiValueLabel: (base: any, state: { data: any }) => {
+      return state.data.email === session.data?.user?.email
+        ? { ...base, fontWeight: "bold", color: "white", paddingRight: 6 }
+        : base;
+    },
+  };
   const handleUpload = (data: any) => {
     setValue("image", data.info.secure_url, {
       shouldValidate: true,
     });
   };
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     axios
-      .post("/api/conversations", {
-        ...data,
-        isGroup: true,
-      })
+      .post(`/api/conversations/${conversationId}/update`, data)
       .then(() => {
-        router.refresh();
         onClose();
+        router.refresh();
       })
       .catch((error) => {
         if (error.response.status === 400) {
@@ -81,10 +110,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
     >
       <div className="text-left">
         <div className="text-base font-semibold leading-7 text-gray-900">
-          Create a group chat
+          Profile
         </div>
         <p className="mt-1 text-sm leading-6 text-gray-600">
-          Create a chat with more than 2 people.
+          Edit your group information.
         </p>
 
         <form
@@ -104,7 +133,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
               >
                 <div
                   className={clsx(
-                    "w-24 h-24  hover:opacity-80 rounded-full ring-1 ring-gray-900",
+                    "w-24 h-24 hover:opacity-80 rounded-full ring-1 ring-gray-900",
                     image && "ring-0"
                   )}
                 >
@@ -134,7 +163,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
             options={users.map((user) => ({
               value: user.id,
               label: user.name,
+              email: user.email,
             }))}
+            styles={styles}
+            isClearable={false}
           />
           <hr className="mt-5" />
           <div className="flex mt-6 justify-end items-center gap-6">
@@ -150,7 +182,7 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
               Cancel
             </Button>
             <Button disabled={isLoading} type="submit">
-              Create
+              Save
             </Button>
           </div>
         </form>
@@ -159,4 +191,4 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
   );
 };
 
-export default GroupChatModal;
+export default GroupSettungModal;

@@ -7,6 +7,8 @@ interface SelectProps {
   onChange: (value: Record<string, any>) => void;
   value: Record<string, any>;
   options: Record<string, any>[];
+  styles?: any;
+  isClearable?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -15,6 +17,8 @@ const Select: React.FC<SelectProps> = ({
   value,
   options,
   onChange,
+  styles,
+  isClearable,
 }) => {
   return (
     <div>
@@ -29,6 +33,8 @@ const Select: React.FC<SelectProps> = ({
           onChange={onChange}
           value={value}
           required
+          styles={styles}
+          isClearable={isClearable}
         />
       </div>
     </div>

@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const currentUser = await getCurrentUser();
     const body = await request.json();
-    const { userId, members, isGroup, name } = body;
+    const { userId, members, isGroup, name, image } = body;
 
     if (!currentUser?.email && !currentUser?.id) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
       const newConversation = await prisma.conversation.create({
         data: {
           name: name,
+          image: image,
           isGroup,
           users: {
             connect: [

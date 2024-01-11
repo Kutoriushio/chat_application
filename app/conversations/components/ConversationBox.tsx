@@ -71,7 +71,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       )}
     >
       {conversation.isGroup ? (
-        <AvatarGroup users={conversation.users} />
+        <AvatarGroup users={conversation.users} image={conversation.image} />
       ) : (
         <Avatar user={otherUser} />
       )}

@@ -14,9 +14,10 @@ interface HeaderProps {
   conversation: Conversation & {
     users: User[];
   };
+  users: User[];
 }
 
-const Header: React.FC<HeaderProps> = ({ conversation }) => {
+const Header: React.FC<HeaderProps> = ({ conversation, users }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const otherUser = useOtherUser(conversation);
   const { members } = useActiveList();
@@ -36,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         statusText={statusText}
+        users={users}
       />
       <div className="w-full py-3 px-2 lg:px-6 flex justify-between items-center bg-white border-b-[1px] shadow-sm">
         <div className="flex gap-3 items-center">
@@ -47,7 +49,10 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           </Link>
           <div className="mt-1.5">
             {conversation.isGroup ? (
-              <AvatarGroup users={conversation.users} />
+              <AvatarGroup
+                users={conversation.users}
+                image={conversation.image}
+              />
             ) : (
               <Avatar user={otherUser} />
             )}

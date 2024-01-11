@@ -5,8 +5,21 @@ import React, { use } from "react";
 
 interface AvatarGroupProps {
   users: User[];
+  image: string | null;
 }
-const AvatarGroup: React.FC<AvatarGroupProps> = ({ users }) => {
+const AvatarGroup: React.FC<AvatarGroupProps> = ({ users, image }) => {
+  if (image) {
+    return (
+      <div className="relative w-9 h-9 md:h-11 md:w-11 overflow-hidden rounded-full inline-block">
+        <Image
+          fill
+          src={image}
+          alt="avatar"
+          className="object-cover object-top"
+        />
+      </div>
+    );
+  }
   const sliceUsers = users.slice(0, 3);
 
   const positionMap = {

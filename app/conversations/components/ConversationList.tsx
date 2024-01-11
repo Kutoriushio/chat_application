@@ -77,15 +77,37 @@ const ConversationList: React.FC<ConversationListProps> = ({
       router.refresh();
     };
 
+    const updateGroupConversationHandler = (
+      updatedConversation: FullConversationType
+    ) => {
+      setConversations((current) => {
+        const index = current.findIndex(
+          (conversation) => conversation.id === updatedConversation.id
+        );
+        const newConversations = [...current];
+        newConversations[index] = updatedConversation;
+        return newConversations;
+      });
+      router.refresh();
+    };
+
     pusherClient.bind("new-conversation", newConversationHandler);
     pusherClient.bind("update-conversation", updateConversationHandler);
     pusherClient.bind("remove-conversation", removeConversationHandler);
+    pusherClient.bind(
+      "update-group-conversation",
+      updateGroupConversationHandler
+    );
 
     return () => {
       pusherClient.unsubscribe(pusherChannel);
       pusherClient.unbind("new-conversation", newConversationHandler);
       pusherClient.unbind("update-conversation", updateConversationHandler);
       pusherClient.unbind("remove-conversation", removeConversationHandler);
+      pusherClient.unbind(
+        "update-group-conversation",
+        updateGroupConversationHandler
+      );
     };
   }, [pusherChannel, router]);
   return (

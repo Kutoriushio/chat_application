@@ -7,8 +7,10 @@ import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
 import React, { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
+import { GrEdit } from "react-icons/gr";
 import ConfirmModal from "./ConfirmModal";
 import AvatarGroup from "@/app/components/AvatarGroup";
+import GroupSettungModal from "./GroupSettungModal";
 
 interface ProfileDrawerProps {
   data: Conversation & {
@@ -17,15 +19,18 @@ interface ProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   statusText: string;
+  users: User[];
 }
 const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   data,
   isOpen,
   onClose,
   statusText,
+  users,
 }) => {
   const otherUser = useOtherUser(data);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const joinedDate = format(new Date(otherUser.createdAt), "PP");
 
   const title = useMemo(() => {
@@ -38,10 +43,16 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
         isOpen={confirmOpen}
         onClose={() => setConfirmOpen(false)}
       />
+      <GroupSettungModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        currentConversation={data}
+        users={users}
+      />
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog
           as="div"
-          onClose={confirmOpen ? () => null : onClose}
+          onClose={confirmOpen || modalOpen ? () => null : onClose}
           className="relative z-50"
         >
           <Transition.Child
@@ -80,25 +91,39 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 
                   <div className="flex flex-col items-center px-4 sm:px-6">
                     {data.isGroup ? (
-                      <AvatarGroup users={data.users} />
+                      <AvatarGroup users={data.users} image={data.image} />
                     ) : (
                       <Avatar user={otherUser} />
                     )}
 
                     <div className="mt-2">{title}</div>
                     <div className="text-sm text-neutral-800">{statusText}</div>
-                    <div
-                      className="flex flex-col gap-2 mt-5 cursor-pointer hover:opacity-75"
-                      onClick={() => setConfirmOpen(true)}
-                    >
-                      <div className="flex justify-center items-center text-red-400 bg-neutral-100 rounded-full w-10 h-10">
-                        <IoTrash size={20} />
-                      </div>
-                      <div className="text-sm font-light text-neutral-600">
-                        Delete
+                    <div className="flex gap-10">
+                      {data.isGroup && (
+                        <div
+                          className="flex flex-col gap-2 mt-5 cursor-pointer hover:opacity-75 items-center"
+                          onClick={() => setModalOpen(true)}
+                        >
+                          <div className="flex justify-center items-center text-sky-600 bg-neutral-100 rounded-full w-10 h-10">
+                            <GrEdit size={20} />
+                          </div>
+                          <div className="text-sm font-light text-neutral-600">
+                            Edit
+                          </div>
+                        </div>
+                      )}
+                      <div
+                        className="flex flex-col gap-2 mt-5 cursor-pointer hover:opacity-75 items-center"
+                        onClick={() => setConfirmOpen(true)}
+                      >
+                        <div className="flex justify-center items-center text-red-400 bg-neutral-100 rounded-full w-10 h-10">
+                          <IoTrash size={20} />
+                        </div>
+                        <div className="text-sm font-light text-neutral-600">
+                          Delete
+                        </div>
                       </div>
                     </div>
-
                     <div className="w-full py-5">
                       <dl className="space-y-8 px-4 sm:space-y-6 sm:px-6">
                         {data.isGroup && (
