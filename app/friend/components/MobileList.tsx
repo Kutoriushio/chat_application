@@ -10,7 +10,7 @@ const MobileList: React.FC<MobileListProps> = ({ users }) => {
     <div className="flex flex-col gap-[6px] lg:hidden">
       <CollapsiblePanel users={users} label="Online friends" />
       <CollapsiblePanel users={users} label="My friends" />
-      <CollapsiblePanel users={users} label="Friend Requests" />
+      <CollapsiblePanel users={users} request label="Friend Requests" />
     </div>
   );
 };

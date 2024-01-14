@@ -19,7 +19,7 @@ const useUserRoutes = () => {
         active: pathname === "/friend/all",
       },
       {
-        label: "Friend Requests",
+        label: "Friend requests",
         href: "/friend/request",
         icon: FiUserCheck,
         active: pathname === "/friend/request",

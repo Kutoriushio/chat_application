@@ -8,10 +8,12 @@ import clsx from "clsx";
 interface CollapsiblePanelProps {
   users: User[];
   label: string;
+  request?: boolean;
 }
 const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
   users,
   label,
+  request,
 }) => {
   return (
     <Disclosure>
@@ -31,9 +33,9 @@ const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 -translate-y-3"
           >
-            <Disclosure.Panel>
+            <Disclosure.Panel className="flex flex-col gap-1">
               {users.map((user) => (
-                <UserBox key={user.id} user={user} />
+                <UserBox key={user.id} user={user} request={request} mobile />
               ))}
             </Disclosure.Panel>
           </Transition>

@@ -66,8 +66,8 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
     <div
       onClick={handleClick}
       className={clsx(
-        "relative w-full flex items-center space-x-3 p-2 hover:bg-sky-200 rounded-lg transition cursor-pointer",
-        selected ? "bg-sky-200" : "bg-white"
+        "relative w-full flex items-center space-x-3 p-2 hover:bg-sky-300 rounded-lg transition cursor-pointer",
+        selected ? "bg-sky-300" : "bg-white"
       )}
     >
       {conversation.isGroup ? (

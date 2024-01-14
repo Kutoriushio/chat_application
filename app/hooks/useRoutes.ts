@@ -19,7 +19,7 @@ const useRoutes = () => {
       },
       {
         label: "Friend",
-        href: "/friend",
+        href: "/friend/online",
         icon: HiUsers,
         active: pathname?.startsWith("/friend"),
       },

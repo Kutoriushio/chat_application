@@ -133,13 +133,15 @@ const ConversationList: React.FC<ConversationListProps> = ({
               <MdOutlineGroupAdd size={20} />
             </div>
           </div>
-          {conversations.map((conversation) => (
-            <ConversationBox
-              key={conversation.id}
-              conversation={conversation}
-              selected={conversation.id === conversationId}
-            />
-          ))}
+          <div className="flex flex-col gap-2">
+            {conversations.map((conversation) => (
+              <ConversationBox
+                key={conversation.id}
+                conversation={conversation}
+                selected={conversation.id === conversationId}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>
