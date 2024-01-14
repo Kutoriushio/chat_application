@@ -29,7 +29,7 @@ const AuthForm = () => {
   });
   useEffect(() => {
     if (session?.status === "authenticated") {
-      window.location.href = "/users";
+      window.location.href = "/friend";
     }
   }, [session?.status]);
 
@@ -92,7 +92,7 @@ const AuthForm = () => {
   const socialAction = (action: string) => {
     setIsLoading(true);
 
-    signIn(action, { callbackUrl: "/users" })
+    signIn(action, { callbackUrl: "/friend" })
       .then((callback) => {
         if (callback?.error) {
           toast.error("Something went wrong!");
