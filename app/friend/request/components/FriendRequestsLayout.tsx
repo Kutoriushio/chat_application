@@ -63,9 +63,10 @@ const FriendRequestsLayout: React.FC<FriendRequestsLayoutProps> = ({
           <span>{label}</span>
         </div>
         <div className="flex gap-6 flex-wrap p-5 w-full">
-          {friendRequestsList.map((user: User) => (
-            <UserBox key={user.email} user={user} request={request} />
-          ))}
+          {friendRequestsList &&
+            friendRequestsList.map((user: User) => (
+              <UserBox key={user.email} user={user} request={request} />
+            ))}
         </div>
       </div>
     </div>

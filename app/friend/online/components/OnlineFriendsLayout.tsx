@@ -63,9 +63,10 @@ const OnlineFriendsLayout: React.FC<OnlineFriendsLayoutProps> = ({
           <span>{label}</span>
         </div>
         <div className="flex gap-6 flex-wrap p-5 w-full">
-          {onlineFriendsList.map((user: User) => (
-            <UserBox key={user.email} user={user} />
-          ))}
+          {onlineFriendsList &&
+            onlineFriendsList.map((user: User) => (
+              <UserBox key={user.email} user={user} />
+            ))}
         </div>
       </div>
     </div>

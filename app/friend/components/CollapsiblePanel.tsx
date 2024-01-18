@@ -34,9 +34,10 @@ const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
             leaveTo="opacity-0 -translate-y-3"
           >
             <Disclosure.Panel className="flex flex-col gap-1">
-              {users.map((user) => (
-                <UserBox key={user.id} user={user} request={request} mobile />
-              ))}
+              {users &&
+                users.map((user) => (
+                  <UserBox key={user.id} user={user} request={request} mobile />
+                ))}
             </Disclosure.Panel>
           </Transition>
         </>

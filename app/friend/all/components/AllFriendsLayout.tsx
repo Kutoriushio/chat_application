@@ -55,9 +55,10 @@ const AllFriendsLayout: React.FC<AllFriendsLayoutProps> = ({
           <span>{label}</span>
         </div>
         <div className="flex gap-6 flex-wrap p-5 w-full">
-          {allFriendsList.map((user: User) => (
-            <UserBox key={user.email} user={user} />
-          ))}
+          {allFriendsList &&
+            allFriendsList?.map((user: User) => (
+              <UserBox key={user.email} user={user} />
+            ))}
         </div>
       </div>
     </div>
