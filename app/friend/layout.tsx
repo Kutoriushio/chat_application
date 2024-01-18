@@ -10,11 +10,15 @@ export default async function UsersLayout({
   children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return;
+  }
   const requestUsers = await getUserByIds(
-    currentUser?.friendRequestReceivedIds!
+    currentUser.friendRequestReceivedIds!
   );
-  const onlineFriends = await getUserByIds(currentUser?.friendIds!);
-  const allFriends = await getUserByIds(currentUser?.friendIds!);
+
+  const onlineFriends = await getUserByIds(currentUser.friendIds!);
+  const allFriends = await getUserByIds(currentUser.friendIds);
   return (
     <Sidebar>
       <UserList

@@ -19,7 +19,6 @@ const FriendRequestsLayout: React.FC<FriendRequestsLayoutProps> = ({
   request,
 }) => {
   const [friendRequestsList, setFriendRequestsList] = useState<User[]>(users);
-
   const session = useSession();
   const pusherChannel = session.data?.user?.email;
   const router = useRouter();

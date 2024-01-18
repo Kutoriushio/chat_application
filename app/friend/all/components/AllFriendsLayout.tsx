@@ -17,7 +17,7 @@ const AllFriendsLayout: React.FC<AllFriendsLayoutProps> = ({
   label,
 }) => {
   const [allFriendsList, setAllFriendsList] = useState<User[]>(users);
-
+  console.log(allFriendsList);
   const session = useSession();
   const pusherChannel = session.data?.user?.email;
   const router = useRouter();
@@ -55,10 +55,9 @@ const AllFriendsLayout: React.FC<AllFriendsLayoutProps> = ({
           <span>{label}</span>
         </div>
         <div className="flex gap-6 flex-wrap p-5 w-full">
-          {allFriendsList &&
-            allFriendsList?.map((user: User) => (
-              <UserBox key={user.email} user={user} />
-            ))}
+          {allFriendsList.map((user: User) => (
+            <UserBox key={user.email} user={user} />
+          ))}
         </div>
       </div>
     </div>

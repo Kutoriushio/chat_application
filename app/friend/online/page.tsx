@@ -5,7 +5,10 @@ import OnlineFriendsLayout from "./components/OnlineFriendsLayout";
 
 const OnlineFriends = async () => {
   const currentUser = await getCurrentUser();
-  const users = await getUserByIds(currentUser?.friendIds!);
+  if (!currentUser) {
+    return;
+  }
+  const users = await getUserByIds(currentUser.friendIds);
   return <OnlineFriendsLayout users={users} label="Online friends" />;
 };
 

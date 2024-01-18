@@ -5,7 +5,10 @@ import FriendRequestsLayout from "./components/FriendRequestsLayout";
 
 const FriendRequest = async () => {
   const currentUser = await getCurrentUser();
-  const users = await getUserByIds(currentUser?.friendRequestReceivedIds!);
+  if (!currentUser) {
+    return;
+  }
+  const users = await getUserByIds(currentUser.friendRequestReceivedIds);
   return <FriendRequestsLayout users={users} label="Friend requests" request />;
 };
 

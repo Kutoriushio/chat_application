@@ -6,7 +6,10 @@ import AllFriendsLayout from "./components/AllFriendsLayout";
 
 const AllFriends = async () => {
   const currentUser = await getCurrentUser();
-  const users = await getUserByIds(currentUser?.friendIds!);
+  if (!currentUser) {
+    return;
+  }
+  const users = await getUserByIds(currentUser.friendIds!);
   return <AllFriendsLayout users={users} label="My friends" />;
 };
 
