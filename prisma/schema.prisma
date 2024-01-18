@@ -26,6 +26,18 @@ model User {
   seenMessageIds String[]  @db.ObjectId
   seenMessages   Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
 
+  friendIds String[] @db.ObjectId
+  friends   User[]   @relation("Friends", fields: [friendIds], references: [id])
+
+  friendOfIds String[] @db.ObjectId
+  friendOf    User[]   @relation("Friends", fields: [friendOfIds], references: [id])
+
+  friendRequestReceivedIds String[] @db.ObjectId
+  friendRequestsReceived   User[]   @relation("FriendRequest", fields: [friendRequestReceivedIds], references: [id])
+
+  friendRequestSentdIds String[] @db.ObjectId
+  friendRequestsSent    User[]   @relation("FriendRequest", fields: [friendRequestSentdIds], references: [id])
+
   accounts Account[]
   messages Message[]
 }

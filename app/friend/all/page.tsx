@@ -1,12 +1,13 @@
-import getUsers from "@/app/actions/getUsers";
 import React from "react";
-import UserCard from "../components/UserCard";
-import { FiUsers } from "react-icons/fi";
-import DesktopLayout from "../components/DesktopLayout";
+
+import getCurrentUser from "@/app/actions/getCurrentUser";
+import getUserByIds from "@/app/actions/getUserByIds";
+import AllFriendsLayout from "./components/AllFriendsLayout";
 
 const AllFriends = async () => {
-  const users = await getUsers();
-  return <DesktopLayout users={users} label="My friends" />;
+  const currentUser = await getCurrentUser();
+  const users = await getUserByIds(currentUser?.friendIds!);
+  return <AllFriendsLayout users={users} label="My friends" />;
 };
 
 export default AllFriends;

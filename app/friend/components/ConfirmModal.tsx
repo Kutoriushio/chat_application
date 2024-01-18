@@ -7,8 +7,13 @@ import { FiAlertTriangle } from "react-icons/fi";
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onClick: () => void;
 }
-const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
+const ConfirmModal: React.FC<ConfirmModalProps> = ({
+  isOpen,
+  onClose,
+  onClick,
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="sm:flex sm:items-start">
@@ -31,7 +36,15 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
         <Button secondary onClick={onClose}>
           Cancel
         </Button>
-        <Button danger>Delete</Button>
+        <Button
+          danger
+          onClick={() => {
+            onClick();
+            onClose();
+          }}
+        >
+          Delete
+        </Button>
       </div>
     </Modal>
   );

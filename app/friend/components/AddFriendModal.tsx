@@ -5,6 +5,9 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/app/components/inputs/Input";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface AddFriendModalProps {
   isOpen?: boolean;
@@ -12,7 +15,7 @@ interface AddFriendModalProps {
 }
 const AddFriendModal: React.FC<AddFriendModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const schema = yup.object({
     email: yup
       .string()
@@ -33,7 +36,27 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({ isOpen, onClose }) => {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+    setIsLoading(true);
+    axios
+      .post("/api/friend/add", data)
+      .then(() => {
+        router.refresh();
+        toast.success("Request sent successfully!");
+        reset();
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data === "User not found") {
+          toast.error("Can't find the user, please check the email.");
+        }
+        if (error.response.data === "Already sent request") {
+          toast.error("You have already sent the request to this user.");
+        }
+        if (error.response.data === "Invaild data") {
+          toast.error("Invaild email, please check the email.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
   return (
     <Modal

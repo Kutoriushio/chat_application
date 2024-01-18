@@ -3,14 +3,20 @@ import CollapsiblePanel from "./CollapsiblePanel";
 import { User } from "@prisma/client";
 
 interface MobileListProps {
-  users: User[];
+  requestUsers: User[];
+  onlineFriends: User[];
+  allFriends: User[];
 }
-const MobileList: React.FC<MobileListProps> = ({ users }) => {
+const MobileList: React.FC<MobileListProps> = ({
+  requestUsers,
+  onlineFriends,
+  allFriends,
+}) => {
   return (
     <div className="flex flex-col gap-[6px] lg:hidden">
-      <CollapsiblePanel users={users} label="Online friends" />
-      <CollapsiblePanel users={users} label="My friends" />
-      <CollapsiblePanel users={users} request label="Friend Requests" />
+      <CollapsiblePanel users={onlineFriends} label="Online friends" />
+      <CollapsiblePanel users={allFriends} label="My friends" />
+      <CollapsiblePanel users={requestUsers} request label="Friend Requests" />
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import React from "react";
-import getUsers from "@/app/actions/getUsers";
-import DesktopLayout from "../components/DesktopLayout";
+import getCurrentUser from "@/app/actions/getCurrentUser";
+import getUserByIds from "@/app/actions/getUserByIds";
+import OnlineFriendsLayout from "./components/OnlineFriendsLayout";
 
 const OnlineFriends = async () => {
-  const users = await getUsers();
-  return <DesktopLayout users={users} label="Online friends" />;
+  const currentUser = await getCurrentUser();
+  const users = await getUserByIds(currentUser?.friendIds!);
+  return <OnlineFriendsLayout users={users} label="Online friends" />;
 };
 
 export default OnlineFriends;

@@ -1,10 +1,12 @@
 import React from "react";
-import getUsers from "@/app/actions/getUsers";
-import DesktopLayout from "../components/DesktopLayout";
+import getCurrentUser from "@/app/actions/getCurrentUser";
+import getUserByIds from "@/app/actions/getUserByIds";
+import FriendRequestsLayout from "./components/FriendRequestsLayout";
 
 const FriendRequest = async () => {
-  const users = await getUsers();
-  return <DesktopLayout users={users} label="Friend requests" request />;
+  const currentUser = await getCurrentUser();
+  const users = await getUserByIds(currentUser?.friendRequestReceivedIds!);
+  return <FriendRequestsLayout users={users} label="Friend requests" request />;
 };
 
 export default FriendRequest;

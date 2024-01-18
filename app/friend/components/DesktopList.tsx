@@ -4,10 +4,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
 
-interface DesktopListProps {
-  users: User[];
-}
-const DesktopList: React.FC<DesktopListProps> = ({ users }) => {
+const DesktopList = () => {
   const routes = useUserRoutes();
   return (
     <div className="hidden lg:block">

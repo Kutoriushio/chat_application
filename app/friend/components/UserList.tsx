@@ -1,18 +1,97 @@
 "use client";
 
 import { User } from "@prisma/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MobileList from "./MobileList";
 import DesktopList from "./DesktopList";
 import { FiUserPlus } from "react-icons/fi";
 import AddFriendModal from "./AddFriendModal";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { pusherClient } from "@/app/libs/pusher";
+import useActiveList from "@/app/hooks/useActiveList";
 
 interface UserListProps {
-  users: User[];
+  requestUsers: User[];
+  onlineFriends: User[];
+  allFriends: User[];
 }
 
-const UserList: React.FC<UserListProps> = ({ users }) => {
+const UserList: React.FC<UserListProps> = ({
+  requestUsers,
+  onlineFriends,
+  allFriends,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { members } = useActiveList();
+  const onlineUsers = onlineFriends.filter((user) =>
+    members.includes(user.email!)
+  );
+  const [onlineFriendsList, setOnlineFriendsList] =
+    useState<User[]>(onlineUsers);
+  const [friendRequestsList, setFriendRequestsList] =
+    useState<User[]>(requestUsers);
+  const [allFriendsList, setAllFriendsList] = useState<User[]>(allFriends);
+  const session = useSession();
+  const pusherChannel = session.data?.user?.email;
+  const router = useRouter();
+  useEffect(() => {
+    router.refresh();
+    if (!pusherChannel) {
+      return;
+    }
+    pusherClient.subscribe(pusherChannel);
+
+    const receiveRequestHandler = (updateUser: User) => {
+      setFriendRequestsList((prev) => {
+        return [updateUser, ...prev];
+      });
+    };
+
+    const handleRequestHandler = (userId: string) => {
+      setFriendRequestsList((prev) => {
+        return [
+          ...prev.filter((user) => {
+            user.id !== userId;
+          }),
+        ];
+      });
+    };
+
+    const acceptRequestHandler = (updateUser: User) => {
+      setAllFriendsList((prev) => [...prev, updateUser]);
+
+      setOnlineFriendsList((prev) => {
+        if (members.includes(updateUser.email!)) {
+          return [...prev, updateUser];
+        }
+        return prev;
+      });
+      router.refresh();
+    };
+
+    const deleteFriendHandler = (updateUser: User) => {
+      setAllFriendsList((prev) =>
+        prev.filter((current) => current.id !== updateUser.id)
+      );
+
+      setOnlineFriendsList((prev) =>
+        prev.filter((current) => current.id !== updateUser.id)
+      );
+    };
+
+    pusherClient.bind("accept-request", acceptRequestHandler);
+    pusherClient.bind("delete-friend", deleteFriendHandler);
+    pusherClient.bind("receive-request", receiveRequestHandler);
+    pusherClient.bind("handle-request", handleRequestHandler);
+    return () => {
+      pusherClient.unsubscribe(pusherChannel);
+      pusherClient.unbind("receive-request", receiveRequestHandler);
+      pusherClient.unbind("handle-request", handleRequestHandler);
+      pusherClient.unbind("accept-request", acceptRequestHandler);
+      pusherClient.unbind("delete-friend", deleteFriendHandler);
+    };
+  }, [router, pusherChannel, members]);
   return (
     <>
       <AddFriendModal
@@ -30,8 +109,12 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
               <FiUserPlus size={20} />
             </div>
           </div>
-          <MobileList users={users} />
-          <DesktopList users={users} />
+          <MobileList
+            requestUsers={friendRequestsList}
+            onlineFriends={onlineFriendsList}
+            allFriends={allFriendsList}
+          />
+          <DesktopList />
         </div>
       </div>
     </>
